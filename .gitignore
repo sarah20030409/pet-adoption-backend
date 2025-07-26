@@ -1,0 +1,7 @@
+# Python cache files
+*.pyc
+__pycache__/
+
+# Local temporary files
+*.log
+*.pid
