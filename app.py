@@ -1,3 +1,4 @@
+from dotenv import load_dotenv #讀取環境變數
 from flask import Flask,jsonify,request,send_from_directory,session
 from flask_cors import CORS,cross_origin
 from sql import *
@@ -6,6 +7,12 @@ from werkzeug.utils import secure_filename #  UploadSet, configure_uploads, IMAG
 from flask_uploads import UploadSet, configure_uploads, IMAGES
 #Flask-Uploads的PyPi包從2020年2月起就被破壞了。 改 install Flask-Reuploaded 
 import os
+
+load_dotenv()
+host = os.getenv("MYSQL_HOST")
+user = os.getenv("MYSQL_USER")
+password = os.getenv("MYSQL_PASSWORD")
+db = os.getenv("MYSQL_DB")
 
 app =Flask(__name__)
 app.secret_key = '1234'
@@ -198,9 +205,9 @@ def back():
 # ============= RUN APP ==============
 if __name__ == '__main__':
     Database.init_connection_pool(
-        host="localhost",
-        user="System_Manager",
-        password="1234",
-        database="Pet_Adoption_DB"
+        host=host,
+        user=user,
+        password=password,
+        database=db
         )
     app.run(debug=True) # DB connection
