@@ -22,6 +22,17 @@ photos = UploadSet('photos',IMAGES) # 創建一個名為 photos 的上傳集合�
 app.config['UPLOADED_PHOTOS_DEST'] = 'uploads' # 設置上傳文件保存的目錄為 uploads。
 configure_uploads(app, photos) #將上傳集合 photos 配置到 Flask 應用中。
 
+try:
+    Database.init_connection_pool(
+        host=host,
+        user=user,
+        password=password,
+        database=db
+    )
+    print("Database connection pool initialized successfully")
+except Exception as e:
+    print(f"Failed to initialize database connection pool: {e}")
+    raise
 
 @app.route('/')
 def home():
@@ -204,10 +215,4 @@ def back():
 
 # ============= RUN APP ==============
 if __name__ == '__main__':
-    Database.init_connection_pool(
-        host=host,
-        user=user,
-        password=password,
-        database=db
-        )
     app.run(debug=True) # DB connection
