@@ -1,0 +1,5 @@
+# 統一文字檔為 LF 換行符號(有遇到換行警告)
+* text=auto eol=lf
+
+# 對於 Windows 批次檔，保留 CRLF（必要時）
+*.bat text eol=crlf
