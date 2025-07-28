@@ -1,0 +1,49 @@
+version: '3.9'
+
+# There are two services: backend and mysql
+services:
+  mysql:
+    image: mysql:8.4
+    container_name: pet-adoption-mysql
+    # Set the environment variables to initialize the database
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: Pet_Adoption_DB
+      MYSQL_USER: System_Manager
+      MYSQL_PASSWORD: 1234
+    # Map the host's port 3306 to the container's port 3306 (MySQL's default port), 
+    # so that the outside world can connect to this MySQL. 
+    ports:
+      - 3306:3306
+
+    # mysql_data:/var/lib/mysql: stores the data of the MySQL database (to prevent data loss during restart).
+    # ./db/Pet_Adoption_web_dump.sql:/docker-entrypoint-initdb.d/init.sql: When the container is created for the first time, this SQL file will be executed to initialize the database.
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ./db/Pet_Adoption_web_dump.sql:/docker-entrypoint-initdb.d/init.sql
+
+  backend:
+    build: . # == docker build -t pet-backend . 
+
+    # Provides the environment variables required by the Flask program to connect to MySQL.
+    # MYSQL_HOST: mysql | refers to the mysql service defined above ↑ , and Docker will automatically resolve this name.
+    environment:
+      MYSQL_HOST: mysql
+      MYSQL_USER: System_Manager
+      MYSQL_PASSWORD: 1234
+      MYSQL_DB: Pet_Adoption_DB
+
+    # Map the host's port 5000 to the Flask port 5000 in the container, so you can open http://localhost:5000 to access the backend
+    ports:
+      - 5000:5000
+    
+    # The backend container will be started after the mysql container is started.
+    # But this does not mean that MySQL initialization is complete!!
+    # so the backend program may need to retry the connection itself.
+    depends_on:
+      - mysql
+
+# Declare a volume named mysql_data so that mysql can access and persist data
+# (even if the container is deleted, the data will not disappear).
+volumes:
+  mysql_data:
