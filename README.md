@@ -21,6 +21,7 @@ git clone https://github.com/sarah20030409/pet-adoption-backend.git
 cd pet-adoption-backend
 docker-compose up --build
 ```
+⚠️ Note: If port 3306 is already in use (e.g., from a local MySQL installation), please modify the port mapping in `docker-compose.yml` to something like `3307:3306`, and update the corresponding environment variables.
 
 ## 📦 Manual Setup (Without Docker)
 
