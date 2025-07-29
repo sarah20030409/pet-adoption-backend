@@ -37,7 +37,7 @@ CREATE TABLE `Comments` (
   KEY `parent_id` (`parent_id`),
   CONSTRAINT `comments_ibfk_1` FOREIGN KEY (`oId`) REFERENCES `Owner` (`oId`),
   CONSTRAINT `comments_ibfk_2` FOREIGN KEY (`pId`) REFERENCES `Pet` (`pId`),
-  CONSTRAINT `comments_ibfk_3` FOREIGN KEY (`parent_id`) REFERENCES `comments` (`CommentId`)
+  CONSTRAINT `comments_ibfk_3` FOREIGN KEY (`parent_id`) REFERENCES `Comments` (`CommentId`)
 ) ENGINE=InnoDB AUTO_INCREMENT=47 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 

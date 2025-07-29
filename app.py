@@ -2,6 +2,8 @@ from dotenv import load_dotenv #讀取環境變數
 from flask import Flask,jsonify,request,send_from_directory,session
 from flask_cors import CORS,cross_origin
 from sql import *
+import time
+from mysql.connector import Error
 #下面這兩個是處理圖片儲存的
 from werkzeug.utils import secure_filename #  UploadSet, configure_uploads, IMAGES 仰賴於secure_filename，防止檔名中有特殊字元
 from flask_uploads import UploadSet, configure_uploads, IMAGES
@@ -22,17 +24,22 @@ photos = UploadSet('photos',IMAGES) # 創建一個名為 photos 的上傳集合�
 app.config['UPLOADED_PHOTOS_DEST'] = 'uploads' # 設置上傳文件保存的目錄為 uploads。
 configure_uploads(app, photos) #將上傳集合 photos 配置到 Flask 應用中。
 
-try:
-    Database.init_connection_pool(
-        host=host,
-        user=user,
-        password=password,
-        database=db
-    )
-    print("Database connection pool initialized successfully")
-except Exception as e:
-    print(f"Failed to initialize database connection pool: {e}")
-    raise
+while True:
+    try:
+        Database.init_connection_pool(
+            host=host,
+            user=user,
+            password=password,
+            database=db
+        )
+        connection = Database.mysqlConnect.get_connection()
+        if connection.is_connected():
+            print("✅ MySQL is ready!")
+            connection.close()
+            break
+    except Error as e:
+        print("⏳ Waiting for MySQL to be ready...")
+        time.sleep(2)
 
 @app.route('/')
 def home():
